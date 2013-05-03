@@ -1,0 +1,33 @@
+# Sidecar.vim
+
+# What is this
+Sidecar.vim is the media viewer for GVim.
+It allows you to see images, videos, and others.
+
+# Dependencies
+Sidecar.vim is dependent on Ruby and QtRuby.
+
+If you use Windows OS, you need to install qtruby4 gem.
+
+    gem install qtruby4
+
+If you use Mac OS X, you need to install qtbindings gem
+
+    gem install qtbindings
+
+# Install
+I strongly recommend you to use NeoBundle.vim to manage/install vim plugins.
+If you use this, you only need to write following lines into your .vimrc.
+
+    NeoBundle 'supermomonga/sidecar.vim'
+
+# Config
+
+(^_^;)
+
+
+# Usage
+
+(^_^;)
+
+

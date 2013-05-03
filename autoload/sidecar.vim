@@ -17,6 +17,9 @@ function! sidecar#echopid()
 endfunction
 
 function! sidecar#open(target)
+  if !sidecar#is_run()
+    call sidecar#start()
+  endif
 	let sock = vimproc#socket_open('localhost', g:sidecar_ruby_port)
 	call sock.write(a:target)
 	call sock.close()
@@ -35,6 +38,11 @@ function! sidecar#stop()
   if sidecar#is_run()
     call vimproc#kill(s:pid, 3)
     echo 'Sidecar closed. (pid:' . s:pid . ')'
+    " debug for vimproc#kill
+    " kill seems make zombie process...
+    echo 'last errmsg : ' . vimproc#get_last_errmsg()
+    echo 'last status : ' . vimproc#get_last_status()
+    " unlet s:pid
   endif
 endfunction
 
