@@ -22,7 +22,7 @@ class Sidecar < Qt::MainWindow
     end
     if @path
       puts "Opening #{@path}"
-      append_image @path
+      append_image File.expand_path(@path)
       puts "Opened."
     end
   end
