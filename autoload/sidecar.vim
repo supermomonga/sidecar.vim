@@ -8,9 +8,9 @@ scriptencoding utf-8
 let s:save_cpo = &cpo
 set cpo&vim
 
-function! sidecar#setpid(pid)
-  let s:process.pid = a:pid
-endfunction
+" function! sidecar#setpid(pid)
+"   let s:process.pid = a:pid
+" endfunction
 
 function! sidecar#echopid()
   echo s:process.pid
@@ -32,7 +32,7 @@ function! sidecar#start()
     let s:process = vimproc#popen2(join([g:sidecar_ruby_path, g:sidecar_script_path, g:sidecar_ruby_port], ' '))
     echo 'Sidecar launched. (pid:' . s:process.pid . ')'
   else
-    echo 'Sidevar already launched. (pid:' . s:process.pid . ')'
+    echo 'Sidecar already launched. (pid:' . s:process.pid . ')'
   endif
 endfunction
 
