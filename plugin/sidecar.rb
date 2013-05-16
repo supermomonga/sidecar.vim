@@ -1,4 +1,7 @@
-require 'qt4'
+require 'tk'
+require 'tkextlib/tkimg/png'
+require 'tkextlib/tkimg/jpeg'
+require 'tkextlib/tkimg/tiff'
 require 'socket'
 require 'thread'
 require 'timeout'
@@ -6,59 +9,56 @@ require 'timeout'
 Signal.trap(:INT){ exit(0) }
 Signal.trap(:QUIT){ exit(0) }
 
-class Sidecar < Qt::MainWindow
-  slots 'socket_wait()'
-
-  def socket_wait
-    @path = nil
-    begin
-      Timeout.timeout 0.1 do
-        Thread.start(@gs.accept) do |s| 
-          @path = s.gets
-          s.close
-        end
-      end
-    rescue TimeoutError
-    end
-    if @path
-      puts "Opening #{@path}"
-      append_image File.expand_path(@path)
-      puts "Opened."
-    end
-  end
-
-  def initialize
-    super
-
-    # TCP server
-    @gs = TCPServer.open(ARGV[0])
-    addr = @gs.addr
-    addr.shift
-    printf("server is on %s\n", addr.join(":"))
-    printf("my pid is on %s\n", $$)
-
-    @l = Qt::Label.new "Want to ride a sidecar? I'm here!"
-    @l.resize 300, 50
-    @l.setAlignment(Qt::AlignCenter)
-    @l.show
-    # raise takes focus from Vim.
-    # @l.raise
-    
-    @ruby_thread_timer = Qt::Timer.new self
-    connect(@ruby_thread_timer, SIGNAL('timeout()'), SLOT('socket_wait()'))
-    @ruby_thread_timer.start(0)
-  end
-  def append_image path
-    $img = Qt::Image.new path
-    @l.setPixmap Qt::Pixmap::fromImage $img
-    @l.setSizePolicy Qt::SizePolicy::Ignored, Qt::SizePolicy::Ignored
-    @l.setScaledContents false
-    @l.adjustSize
-  end
+TkRoot.new do
+  title 'Sidecar'
 end
 
-app = Qt::Application.new(ARGV)
-f = Sidecar.new
-app.exec
+$gs = TCPServer.open(ARGV[0])
+addr = $gs.addr
+addr.shift
+printf("server is on %s\n", addr.join(":"))
+printf("my pid is on %s\n", $$)
+
+
+
+
+c = TkCanvas.new
+$img = TkLabel.new
+$img.image TkPhotoImage.new(file: File.expand_path('~/Desktop/uji.jpg'))
+$img.image TkPhotoImage.new(file: File.expand_path('~/Desktop/zimbu.jpg'))
+$img.pack
+
+$path = false
+$moge = false
+
+TkTimer.start(100) do
+  Thread.start($gs.accept) do |s| 
+    $path = s.gets
+    $moge = true
+    s.close
+  end
+  # $path = false
+  # begin
+  #   Timeout.timeout 1.1 do
+  #     Thread.start($gs.accept) do |s| 
+  #       $path = s.gets
+  #       $moge = true
+  #       s.close
+  #     end
+  #   end
+  # rescue TimeoutError
+  # end
+  # if $path
+  #   $img.image TkPhotoImage.new(file: File.expand_path($path))
+  # end
+  if $moge
+    $img.image TkPhotoImage.new(file: File.expand_path('~/Desktop/uji.jpg'))
+    $moge = false
+  else
+    $img.image TkPhotoImage.new(file: File.expand_path('~/Desktop/chie.png'))
+  end
+end
+Tk.mainloop
+
 
 
